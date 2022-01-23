@@ -24,14 +24,13 @@ function App() {
   const [totalTasksCount, setTotalTasksCount] = useState(0);
   const [pages, setPages] = useState([]);
 
-  useEffect(() => {
-    let array = [];
-    for (let i = 1; i <= Math.ceil(totalTasksCount / 3); i++) {
-      array.push(i);
-    }
+  const onSortFieldChange = (val) => {
+    setSortFieldValue(val);
+  };
 
-    setPages(array);
-  }, [totalTasksCount]);
+  const onSortDirectionChange = (val) => {
+    setSortDirectionValue(val);
+  };
 
   const handleEditTaskClick = (text, status, id) => {
     setSelectedTask({ text, status, id });
@@ -103,24 +102,6 @@ function App() {
       });
   };
 
-  useEffect(() => {
-    api
-      .getTasks(sortFieldValue, sortDirectionValue, pageValue)
-      .then((res) => {
-        setResult(res.message.tasks);
-        setTotalTasksCount(res.message.total_task_count);
-      })
-      .catch((e) => console.log(e));
-  }, [sortFieldValue, sortDirectionValue, pageValue]);
-
-  const onSortFieldChange = (val) => {
-    setSortFieldValue(val);
-  };
-
-  const onSortDirectionChange = (val) => {
-    setSortDirectionValue(val);
-  };
-
   const handleEditTaskSubmit = (formElem) => {
     let formData = new FormData(formElem);
     formData.append("token", localStorage.getItem("jwt"));
@@ -141,6 +122,24 @@ function App() {
         return [];
       });
   };
+
+  useEffect(() => {
+    api
+      .getTasks(sortFieldValue, sortDirectionValue, pageValue)
+      .then((res) => {
+        setResult(res.message.tasks);
+        setTotalTasksCount(res.message.total_task_count);
+      })
+      .catch((e) => console.log(e));
+  }, [sortFieldValue, sortDirectionValue, pageValue]);
+
+  useEffect(() => {
+    let array = [];
+    for (let i = 1; i <= Math.ceil(totalTasksCount / 3); i++) {
+      array.push(i);
+    }
+    setPages(array);
+  }, [totalTasksCount]);
 
   return (
     <div className="App">
