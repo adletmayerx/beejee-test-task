@@ -1,0 +1,19 @@
+.task {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 10px;
+  border: 1px solid #fff;
+  padding: 5px;
+}
+
+.task__menu {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+.task__user-info {
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
+}

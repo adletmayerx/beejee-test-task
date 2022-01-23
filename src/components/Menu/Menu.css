@@ -1,0 +1,11 @@
+.menu {
+  display: flex;
+  justify-content: flex-start;
+  margin: 0 auto 20px;
+  width: calc(100% - 50px);
+  gap: 20px;
+}
+.menu__select {
+  margin: 0;
+  padding: 0;
+}

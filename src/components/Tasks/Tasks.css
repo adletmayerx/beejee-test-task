@@ -1,0 +1,19 @@
+.tasks {
+  margin: 0 auto 20px;
+  width: calc(100% - 50px);
+}
+
+.tasks__list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 25px;
+}
+
+.tasks__list-item {
+  margin: 0;
+  padding: 0;
+}
