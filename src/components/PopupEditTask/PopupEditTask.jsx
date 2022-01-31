@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import PopupWithForm from "../PopupWithForm/PopupWithForm";
 
 const PopupEditTask = ({
@@ -6,7 +6,7 @@ const PopupEditTask = ({
   onClose,
   handleEditTaskSubmit,
   buttonText,
-  task,
+  selectedTask,
   setSelectedTask,
 }) => {
   const statusValues = [
@@ -28,6 +28,12 @@ const PopupEditTask = ({
     },
   ];
 
+  const [text, setText] = useState(selectedTask.text);
+
+  const handleChangeText = (e) => {
+    setText(e.target.value);
+  };
+
   const editFormRef = useRef(null);
 
   const handleSubmit = (e) => {
@@ -36,8 +42,7 @@ const PopupEditTask = ({
   };
 
   const handleStatusChange = (e) => {
-    console.log(e.target.value);
-    setSelectedTask({ text: task.text, id: task.id, status: e.target.value });
+    setSelectedTask({ ...selectedTask, status: e.target.value });
   };
   return (
     <PopupWithForm
@@ -51,7 +56,7 @@ const PopupEditTask = ({
       formRef={editFormRef}
     >
       <select
-        value={task.status}
+        value={selectedTask.status}
         className="popup-edit__select"
         name="status"
         id="task-status-select"
@@ -64,10 +69,11 @@ const PopupEditTask = ({
         })}
       </select>
       <textarea
-        defaultValue={task.text}
+        value={text}
         name="text"
         cols="30"
         rows="10"
+        onChange={handleChangeText}
         required
       ></textarea>
     </PopupWithForm>

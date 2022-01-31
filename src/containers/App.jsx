@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import "./App.css";
-import { api } from "./utils/api";
+import { api } from "../utils/api";
 import {
   Header,
   Menu,
@@ -9,29 +9,42 @@ import {
   PopupLogin,
   PopupCreateTask,
   Pagination,
-} from "./components";
+} from "../components";
+import { connect } from "react-redux";
+import {
+  getTasks,
+  getTotalTaskCount,
+  setPageValue,
+  setSortFieldValue,
+  setSortDirectionValue,
+  setPages,
+  setIsCreateTaskPopupOpen,
+  setIsEditTaskPopupOpen,
+  setIsLoginPopupOpen,
+  setSelectedTask,
+  setIsLoggedIn,
+} from "../actions/actionCreator";
 
-function App() {
-  const [result, setResult] = useState([]);
-  const [sortFieldValue, setSortFieldValue] = useState("id");
-  const [sortDirectionValue, setSortDirectionValue] = useState("asc");
-  const [pageValue, setPageValue] = useState(1);
-  const [isCreateTaskPopupOpen, setIsCreateTaskPopupOpen] = useState(false);
-  const [isEditTaskPopupOpen, setIsEditTaskPopupOpen] = useState(false);
-  const [isLoginPopupOpen, setIsLoginPopupOpen] = useState(false);
-  const [selectedTask, setSelectedTask] = useState(null);
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [totalTasksCount, setTotalTasksCount] = useState(0);
-  const [pages, setPages] = useState([]);
-
-  const onSortFieldChange = (val) => {
-    setSortFieldValue(val);
-  };
-
-  const onSortDirectionChange = (val) => {
-    setSortDirectionValue(val);
-  };
-
+function App({
+  tasks,
+  totalTasksCount,
+  pageParams,
+  pages,
+  popupStatus,
+  selectedTask,
+  isLoggedIn,
+  getTasks,
+  getTotalTaskCount,
+  setPageValue,
+  setSortFieldValue,
+  setSortDirectionValue,
+  setPages,
+  setIsCreateTaskPopupOpen,
+  setIsEditTaskPopupOpen,
+  setIsLoginPopupOpen,
+  setSelectedTask,
+  setIsLoggedIn,
+}) {
   const handleEditTaskClick = (text, status, id) => {
     setSelectedTask({ text, status, id });
     setIsEditTaskPopupOpen(true);
@@ -46,7 +59,7 @@ function App() {
 
   const handleLogoutClick = () => {
     localStorage.removeItem("jwt");
-    setLoggedIn(false);
+    setIsLoggedIn(false);
   };
 
   const closeAllPopups = () => {
@@ -72,10 +85,15 @@ function App() {
         closeAllPopups();
         formElem.reset();
         api
-          .getTasks(sortFieldValue, sortDirectionValue, pageValue)
+          .getTasks(
+            pageParams.sortField,
+            pageParams.sortDirection,
+            pageParams.page
+          )
           .then((res) => {
-            setResult(res.message.tasks);
-            setTotalTasksCount(res.message.total_task_count);
+            getTasks(res.message.tasks);
+            console.log(res.message);
+            getTotalTaskCount(res.message.total_task_count);
           })
           .catch((e) => console.log(e));
       })
@@ -90,7 +108,7 @@ function App() {
           alert(res.message.password);
           throw new Error(res.message.password);
         }
-        setLoggedIn(true);
+        setIsLoggedIn(true);
         localStorage.setItem("jwt", res.message.token);
         closeAllPopups();
         loginForm.reset();
@@ -110,9 +128,13 @@ function App() {
       .then(() => {
         closeAllPopups();
         api
-          .getTasks(sortFieldValue, sortDirectionValue, pageValue)
+          .getTasks(
+            pageParams.sortField,
+            pageParams.sortDirection,
+            pageParams.page
+          )
           .then((res) => {
-            setResult(res.message.tasks);
+            getTasks(res.message.tasks);
           })
           .catch((e) => console.log(e));
       })
@@ -125,13 +147,23 @@ function App() {
 
   useEffect(() => {
     api
-      .getTasks(sortFieldValue, sortDirectionValue, pageValue)
+      .getTasks(pageParams.sortField, pageParams.sortDirection, pageParams.page)
       .then((res) => {
-        setResult(res.message.tasks);
-        setTotalTasksCount(res.message.total_task_count);
+        getTasks(res.message.tasks);
+        getTotalTaskCount(res.message.total_task_count);
+        if (localStorage.getItem("jwt")) {
+          setIsLoggedIn(true);
+        }
       })
       .catch((e) => console.log(e));
-  }, [sortFieldValue, sortDirectionValue, pageValue]);
+  }, [
+    getTasks,
+    getTotalTaskCount,
+    pageParams.sortField,
+    pageParams.sortDirection,
+    pageParams.page,
+    setIsLoggedIn,
+  ]);
 
   useEffect(() => {
     let array = [];
@@ -139,46 +171,48 @@ function App() {
       array.push(i);
     }
     setPages(array);
-  }, [totalTasksCount]);
+  }, [setPages, totalTasksCount]);
 
   return (
     <div className="App">
       <Header
         handleLoginClick={handleLoginClick}
         handleLogoutClick={handleLogoutClick}
-        isLoggedIn={loggedIn}
+        isLoggedIn={isLoggedIn}
       />
 
       <Menu
-        onSortFieldChange={onSortFieldChange}
-        onSortDirectionChange={onSortDirectionChange}
+        onSortFieldChange={setSortFieldValue}
+        onSortDirectionChange={setSortDirectionValue}
         handleClick={handleCreateTaskClick}
       />
 
       <Tasks
-        list={result}
+        list={tasks}
         handleEditTaskClick={handleEditTaskClick}
-        isLoggedIn={loggedIn}
+        isLoggedIn={isLoggedIn}
       />
 
       <Pagination pages={pages} setPage={setPageValue} />
 
       <PopupCreateTask
-        isOpen={isCreateTaskPopupOpen}
+        isOpen={popupStatus.isCreateTaskPopupOpen}
         onClose={handlePopupClosing}
         handleCreateTaskSubmit={handleCreateTaskSubmit}
         buttonText="create task"
       />
+
       <PopupEditTask
-        isOpen={isEditTaskPopupOpen}
+        isOpen={popupStatus.isEditTaskPopupOpen}
         onClose={handlePopupClosing}
         handleEditTaskSubmit={handleEditTaskSubmit}
         buttonText="submit"
-        task={selectedTask !== null && selectedTask}
+        selectedTask={selectedTask !== null && selectedTask}
         setSelectedTask={setSelectedTask}
       />
+
       <PopupLogin
-        isOpen={isLoginPopupOpen}
+        isOpen={popupStatus.isLoginPopupOpen}
         onClose={handlePopupClosing}
         handleLoginSubmit={handleLogin}
         buttonText="login"
@@ -187,4 +221,35 @@ function App() {
   );
 }
 
-export default App;
+export default connect(
+  ({
+    tasks,
+    totalTasksCount,
+    pageParams,
+    pages,
+    popupStatus,
+    selectedTask,
+    isLoggedIn,
+  }) => ({
+    tasks,
+    totalTasksCount,
+    pageParams,
+    pages,
+    popupStatus,
+    selectedTask,
+    isLoggedIn,
+  }),
+  {
+    getTasks,
+    getTotalTaskCount,
+    setPageValue,
+    setSortFieldValue,
+    setSortDirectionValue,
+    setPages,
+    setIsCreateTaskPopupOpen,
+    setIsEditTaskPopupOpen,
+    setIsLoginPopupOpen,
+    setSelectedTask,
+    setIsLoggedIn,
+  }
+)(App);

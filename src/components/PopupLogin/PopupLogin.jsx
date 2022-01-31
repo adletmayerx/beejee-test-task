@@ -4,14 +4,13 @@ import PopupWithForm from "../PopupWithForm/PopupWithForm";
 const PopupLogin = ({ isOpen, onClose, handleLoginSubmit, buttonText }) => {
   const loginFormRef = useRef(null);
   const handleSubmit = (e) => {
-    console.log("login");
     e.preventDefault();
     handleLoginSubmit(loginFormRef.current);
   };
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleChangeEmail = (e) => {
+  const handleChangeUsername = (e) => {
     setUsername(e.target.value);
   };
 
@@ -37,7 +36,7 @@ const PopupLogin = ({ isOpen, onClose, handleLoginSubmit, buttonText }) => {
         className="form__input login__input input input_type_username"
         placeholder="Email"
         value={username || ""}
-        onChange={handleChangeEmail}
+        onChange={handleChangeUsername}
         minLength="4"
         maxLength="40"
         required

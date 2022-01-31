@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import PopupWithForm from "../PopupWithForm/PopupWithForm";
 
 const PopupCreateTask = ({
@@ -14,6 +14,20 @@ const PopupCreateTask = ({
     handleCreateTaskSubmit(createFormRef.current);
   };
 
+  const [text, setText] = useState("");
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+
+  const handleChangeUsername = (e) => {
+    setUsername(e.target.value);
+  };
+  const handleChangeEmai = (e) => {
+    setEmail(e.target.value);
+  };
+  const handleChangeText = (e) => {
+    setText(e.target.value);
+  };
+
   return (
     <PopupWithForm
       title={"create task"}
@@ -25,11 +39,32 @@ const PopupCreateTask = ({
       onSubmit={handleSubmit}
       formRef={createFormRef}
     >
-      <input type="text" name="username" placeholder="username" required/>
+      <input
+        type="text"
+        name="username"
+        placeholder="username"
+        value={username}
+        onChange={handleChangeUsername}
+        required
+      />
 
-      <input type="email" name="email" placeholder="email" required />
+      <input
+        type="email"
+        name="email"
+        placeholder="email"
+        value={email}
+        onChange={handleChangeEmai}
+        required
+      />
 
-      <textarea name="text" cols="30" rows="10" required></textarea>
+      <textarea
+        name="text"
+        cols="30"
+        rows="10"
+        value={text}
+        onChange={handleChangeText}
+        required
+      />
     </PopupWithForm>
   );
 };
