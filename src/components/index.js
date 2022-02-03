@@ -2,7 +2,6 @@ import Header from "./Header/Header";
 import Menu from "./Menu/Menu";
 import Tasks from "./Tasks/Tasks";
 import Task from "./Task/Task";
-import TaskMenu from "./TaskMenu/TaskMenu";
 import PopupWithForm from "./PopupWithForm/PopupWithForm";
 import PopupEditTask from "./PopupEditTask/PopupEditTask";
 import PopupLogin from "./PopupLogin/PopupLogin";
@@ -14,7 +13,6 @@ export {
   Menu,
   Tasks,
   Task,
-  TaskMenu,
   PopupWithForm,
   PopupEditTask,
   PopupLogin,

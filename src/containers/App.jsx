@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import React, { useEffect } from "react";
 import "./App.css";
 import { api } from "../utils/api";
@@ -121,8 +122,10 @@ function App({
   };
 
   const handleEditTaskSubmit = (formElem) => {
+    debugger;
     let formData = new FormData(formElem);
     formData.append("token", localStorage.getItem("jwt"));
+    formData.set("status", selectedTask.status);
     api
       .editTask(selectedTask.id, formData)
       .then(() => {
@@ -220,6 +223,28 @@ function App({
     </div>
   );
 }
+
+// eslint-disable-next-line react/no-typos
+App.PropTypes = {
+  tasks: PropTypes.array,
+  totalTasksCount: PropTypes.number,
+  pageParams: PropTypes.object,
+  pages: PropTypes.array,
+  popupStatus: PropTypes.object,
+  selectedTask: PropTypes.object,
+  isLoggedIn: PropTypes.bool,
+  getTasks: PropTypes.func,
+  getTotalTaskCount: PropTypes.func,
+  setPageValue: PropTypes.func,
+  setSortFieldValue: PropTypes.func,
+  setSortDirectionValue: PropTypes.func,
+  setPages: PropTypes.func,
+  setIsCreateTaskPopupOpen: PropTypes.func,
+  setIsEditTaskPopupOpen: PropTypes.func,
+  setIsLoginPopupOpen: PropTypes.func,
+  setSelectedTask: PropTypes.func,
+  setIsLoggedIn: PropTypes.func,
+};
 
 export default connect(
   ({

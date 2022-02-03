@@ -22,18 +22,18 @@ const Task = ({
             edit task
           </button>
         )}
-        <p className="task__status">
+        <p className="task__status-completed">
           status:{" "}
-          {status === 0
+          {status === 0 || status === 1
             ? "not completed"
-            : status === 1
-            ? "not completed. edit by admin"
-            : status === 10
+            : status === 10 || status === 11
             ? "completed"
-            : status === 11
-            ? "completed. edited by admin"
             : "error"}
         </p>
+        {status === 11 ||
+          (status === 1 && (
+            <p className="task__status-edited">.edited by admin</p>
+          ))}
       </div>
       <p className="task__text">task: {text}</p>
       <div className="task__user-info">
