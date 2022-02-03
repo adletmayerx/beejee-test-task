@@ -30,10 +30,9 @@ const Task = ({
             ? "completed"
             : "error"}
         </p>
-        {status === 11 ||
-          (status === 1 && (
-            <p className="task__status-edited">.edited by admin</p>
-          ))}
+        {(status === 11 || status === 1) && (
+          <p className="task__status-edited">| edited by admin</p>
+        )}
       </div>
       <p className="task__text">task: {text}</p>
       <div className="task__user-info">

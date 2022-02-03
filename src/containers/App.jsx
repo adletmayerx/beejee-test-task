@@ -68,7 +68,7 @@ function App({
     setIsLoginPopupOpen(false);
     setIsCreateTaskPopupOpen(false);
 
-    setSelectedTask(null);
+    
   };
   const handlePopupClosing = (e) => {
     if (
@@ -122,10 +122,14 @@ function App({
   };
 
   const handleEditTaskSubmit = (formElem) => {
-    debugger;
     let formData = new FormData(formElem);
     formData.append("token", localStorage.getItem("jwt"));
     formData.set("status", selectedTask.status);
+
+    for (var p of formData) {
+      console.log(p);
+    }
+    
     api
       .editTask(selectedTask.id, formData)
       .then(() => {
